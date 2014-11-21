@@ -1,0 +1,13 @@
+/ezmongo/target
+/ezmongo-thrift/target
+/ezmongo-java-driver/target
+/ezmongo-utils/target
+/ezmongo-examples/target
+/ezmongo-driver-thrift/target
+/ezmongo-driver-thrift/dependency-reduced-pom.xml
+/ezmongo/dependency-reduced-pom.xml
+.idea
+.classpath
+.project
+.settings
+*.iml

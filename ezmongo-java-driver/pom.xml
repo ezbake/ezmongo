@@ -1,0 +1,135 @@
+<!--
+IMPORTANT: This POM is NOT used for release builds.  Ant is used for that (see build.xml).  Rather, it's provided for
+driver developers who would rather use Maven than Ant as their build tool.
+-->
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<!--   Copyright (C) 2013-2014 Computer Sciences Corporation
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License. -->
+
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>ezbake.data</groupId>
+        <artifactId>ezmongo-parent</artifactId>
+        <version>0.1-SNAPSHOT</version>
+    </parent>
+
+    <artifactId>ezmongo-java-driver</artifactId>
+    <packaging>bundle</packaging>
+    <name>EzBake MongoDB Java Driver</name>
+    <!--
+    <version>2.12.0</version>
+    -->
+    <description>EzBake MongoDB Java driver</description>
+    <url>http://www.mongodb.org</url>
+
+    <licenses>
+        <license>
+            <name>The Apache Software License, Version 2.0</name>
+            <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+            <distribution>repo</distribution>
+        </license>
+    </licenses>
+
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <!--
+            Since for Mongo Client mode, the unit tests require the ezmongo thrift service to be running,
+            We'll skip the tests by default.
+            Tests can be run manually by running "mvn install -DskipTests=false"
+        -->
+        <skipTests>true</skipTests>
+    </properties>
+
+    <build>
+        <sourceDirectory>src/main</sourceDirectory>
+        <testSourceDirectory>src/test</testSourceDirectory>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-source-plugin</artifactId>
+                <version>2.1.2</version>
+                <executions>
+                    <execution>
+                        <id>attach-sources</id>
+                        <phase>verify</phase>
+                        <goals>
+                            <goal>jar-no-fork</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <version>2.16</version>
+                <configuration>
+                    <skipTests>${skipTests}</skipTests>
+                    <!-- if running in intelliJ, use ezmongo-java-driver/src/test/resources for the ezconfiguration.dir -->
+                    <argLine>-Xmx512m
+                        -DtokenSource=appInfo
+                        -Dezconfiguration.dir=src/test/resources
+                        -DunitTestMode=true
+                    </argLine>
+                    <!-- NOTICE -->
+                    <excludes>
+                        <!-- <exclude>**/AggregationTest.java</exclude> -->
+                        <!-- <exclude>**/DBCursorTest.java</exclude> -->
+                        <exclude>**/ReflectionTest.java</exclude>
+                        <!-- <exclude>**/JavaClientTest.java</exclude> -->
+                        <exclude>**/DBTCPConnectorTest.java</exclude>
+                        <!-- <exclude>**/DBTest.java</exclude> -->
+                        <exclude>**/DBPortTest.java</exclude>
+                        <exclude>**/MongoClientTest.java</exclude>
+                    </excludes>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.felix</groupId>
+                <artifactId>maven-bundle-plugin</artifactId>
+                <version>2.3.7</version>
+                <extensions>true</extensions>
+                <configuration>
+                    <instructions>
+                        <Export-Package>com.mongodb.*</Export-Package>
+                        <Export-Package>org.bson.*</Export-Package>
+                    </instructions>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+
+    <dependencies>
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>ezbake.data</groupId>
+            <artifactId>ezmongo-thrift</artifactId>
+	    <version>${project.parent.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>ezbake.data</groupId>
+            <artifactId>common-utils</artifactId>
+        </dependency>
+    </dependencies>
+
+    <developers>
+        <developer>
+            <name>Various</name>
+            <organization>10gen</organization>
+        </developer>
+    </developers>
+
+</project>
